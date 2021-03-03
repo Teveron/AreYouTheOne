@@ -21,7 +21,7 @@ namespace AreYouTheOne
 
         public override bool Equals(object obj)
         {
-            // Check if obj is a Match (versus some other class).
+            // Check if obj is of type Match (versus some other class).
             if (obj is Match match)
             {
                 // Check if both contestants are the same.

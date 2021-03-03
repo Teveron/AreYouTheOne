@@ -27,32 +27,59 @@ namespace AreYouTheOne
 
         public void GenerateSolutions()
         {
-            if (Groups == Groups.Heterosexual)
-                Generate2GroupSolutions();
-            else
+            Solutions = new List<Solution>();
+
+            if (Groups == 1)
                 Generate1GroupSolutions();
+            else
+                Generate2GroupSolutions();
 
             ValidSolutions = Solutions;
+        }
+
+        private void Generate1GroupSolutions()
+        {
+            Permute(Contestants, 0, Contestants.Length);
+        }
+
+        private void Permute(Contestant[] contestants, Int32 l, Int32 r)
+        {
+            if (l == r)
+            {
+                Match[] matches = new Match[contestants.Length / 2];
+                for (Int32 indexContestants = 0; indexContestants < contestants.Length; indexContestants++)
+                    matches[indexContestants] = new Match(contestants[indexContestants], contestants[indexContestants + 1]);
+                Solutions.Add(new Solution(matches));
+            }
+            else
+            {
+                for (Int32 indexLongerList = l; indexLongerList <= r; indexLongerList++)
+                {
+                    Swap(contestants, l, indexLongerList);
+                    Permute(contestants, contestants, l + 2, r);
+                    Swap(contestants, l, indexLongerList);
+                }
+            }
         }
 
         private void Generate2GroupSolutions()
         {
             // Seperate the contestants by group.
-            List<Contestant> group1 = Contestants.Where(c => c.Group == 1).ToList();
-            List<Contestant> group2 = Contestants.Where(c => c.Group == 2).ToList();
+            Contestant[] group1 = Contestants.Where(c => c.Group == 1).ToArray();
+            Contestant[] group2 = Contestants.Where(c => c.Group == 2).ToArray();
 
             // Hold the shorter list constant, and permute through the longer list.
-            var shorterList = group1.Count < group2.Count ? group1 : group2;
-            var longerList = group1.Count < group2.Count ? group2 : group1;
-            Permute(shorterList, longerList, 0, longerList.Count);
+            var shorterList = group1.Length < group2.Length ? group1 : group2;
+            var longerList = group1.Length < group2.Length ? group2 : group1;
+            Permute(shorterList, longerList, 0, longerList.Length);
         }
 
-        private void Permute(List<Contestant> shorterList, List<Contestant> longerList, Int32 l, Int32 r)
+        private void Permute(Contestant[] shorterList, Contestant[] longerList, Int32 l, Int32 r)
         {
             if (l == r)
             {
-                Match[] matches = new Match[shorterList.Count];
-                for (Int32 indexShorterList = 0; indexShorterList < shorterList.Count; indexShorterList++)
+                Match[] matches = new Match[shorterList.Length];
+                for (Int32 indexShorterList = 0; indexShorterList < shorterList.Length; indexShorterList++)
                     matches[indexShorterList] = new Match(shorterList[indexShorterList], longerList[indexShorterList]);
                 Solutions.Add(new Solution(matches));
             }
@@ -67,16 +94,11 @@ namespace AreYouTheOne
             }
         }
 
-        private void Swap(List<Contestant> contestants, Int32 i, Int32 j)
+        private void Swap(Contestant[] contestants, Int32 i, Int32 j)
         {
             var temp = contestants[i];
             contestants[i] = contestants[j];
             contestants[j] = temp;
-        }
-
-        private void Generate1GroupSolutions()
-        {
-
         }
 
         #endregion
@@ -112,10 +134,10 @@ namespace AreYouTheOne
 
         #endregion
 
-        public Int32[,] CalculateMatches()
-        {
+        //public Int32[,] CalculateMatches()
+        //{
 
-        }
+        //}
 
         public IEnumerable<Solution> GetRemainingSolutions()
         {
