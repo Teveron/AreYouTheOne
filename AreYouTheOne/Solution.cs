@@ -8,30 +8,61 @@ namespace AreYouTheOne
 {
     public class Solution
     {
-        public Int32[] Matches { get; private set; }
+        public Match[] Matches { get; private set; }
+        public Boolean IsValid { get; private set; }
 
-        public Solution(Int32[] matches)
+        public Solution(Match[] matches)
         {
-            Matches = new int[matches.Length];
-
-            for (var i = 0; i < matches.Length; i++)
-                Matches[i] = matches[i];
+            Matches = matches;
         }
 
-        public Boolean IsValid(Int32 match, Int32 index, Boolean matched)
+        public Boolean ValidateMatch(Match match)
         {
-            return !((match == Matches[index]) ^ matched);
+            // If this solution is invalid, don't bother checking.
+            if (!IsValid)
+                return false;
+
+            if (Matches.Contains(match))
+                return true;
+            else
+            {
+                IsValid = false;
+                return false;
+            }
         }
 
-        public Boolean IsValid(Int32[] matches, Int32 correctMatches)
+        public Boolean ValidateNonMatch(Match match)
         {
-            Int32 sameMatches = 0;
+            // If this solution is invalid, don't bother checking.
+            if (!IsValid)
+                return false;
 
-            for (Int32 matchIndex = 0; matchIndex < Matches.Length; matchIndex++)
-                if (Matches[matchIndex] == matches[matchIndex])
-                    sameMatches++;
+            if (Matches.Contains(match))
+            {
+                IsValid = false;
+                return false;
+            }
+            else
+                return true;
+        }
 
-            return sameMatches == correctMatches;
+        public Boolean ValidateSolution(Solution solution, Int32 correctMatches)
+        {
+            // If this solution is invalid, don't bother checking.
+            if (!IsValid)
+                return false;
+
+            // Use the Intersect operator to determine what matches are in both solutions
+            var matchIntersection = Matches.Intersect(solution.Matches);
+
+            // If matchIntersection == correctMatches, then this solution is valid.
+            if (matchIntersection.Count() == correctMatches)
+                return true;
+            else
+            {
+                IsValid = false;
+                return false;
+            }
         }
     }
 }

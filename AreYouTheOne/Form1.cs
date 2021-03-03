@@ -17,9 +17,9 @@ namespace AreYouTheOne
         private readonly Int32[] Initial = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         //private readonly Int32[] Initial = { 0, 1, 2, 3 };
 
-        private List<Solution> Solutions;
-        private List<Solution> ValidSolutions;
-        private List<Solution> InvalidSolutions;
+        //private List<Solution2> Solutions;
+        //private List<Solution2> ValidSolutions;
+        //private List<Solution2> InvalidSolutions;
 
         private Int32[,] Probabilities;
 
@@ -31,9 +31,9 @@ namespace AreYouTheOne
         {
             InitializeComponent();
 
-            Solutions = new List<Solution>();
-            ValidSolutions = new List<Solution>();
-            InvalidSolutions = new List<Solution>();
+            Solutions = new List<Solution2>();
+            ValidSolutions = new List<Solution2>();
+            InvalidSolutions = new List<Solution2>();
             Probabilities = new Int32[Initial.Length, Initial.Length];
 
             CellWidth = Boys.Max(name => name.Length) + 2;
@@ -111,25 +111,25 @@ namespace AreYouTheOne
 
         private void AddMatch(Int32 boy, Int32 girl, Boolean matched)
         {
-            List<Tuple<Solution, Boolean>> solutionValidity = new List<Tuple<Solution, Boolean>>();
+            List<Tuple<Solution2, Boolean>> solutionValidity = new List<Tuple<Solution2, Boolean>>();
 
-            foreach (Solution solution in ValidSolutions)
-                solutionValidity.Add(new Tuple<Solution, Boolean>(solution, solution.IsValid(boy, girl, matched)));
+            foreach (Solution2 solution in ValidSolutions)
+                solutionValidity.Add(new Tuple<Solution2, Boolean>(solution, solution.IsValid(boy, girl, matched)));
 
-            ValidSolutions = new List<Solution>();
-            foreach (Solution solution in solutionValidity.Where(s => s.Item2).Select(s => s.Item1))
+            ValidSolutions = new List<Solution2>();
+            foreach (Solution2 solution in solutionValidity.Where(s => s.Item2).Select(s => s.Item1))
                 ValidSolutions.Add(solution);
         }
 
         private void AddPartialSolution(Int32[] matches, Int32 correctMatches)
         {
-            List<Tuple<Solution, Boolean>> solutionValidity = new List<Tuple<Solution, Boolean>>();
+            List<Tuple<Solution2, Boolean>> solutionValidity = new List<Tuple<Solution2, Boolean>>();
 
-            foreach (Solution solution in ValidSolutions)
-                solutionValidity.Add(new Tuple<Solution, Boolean>(solution, solution.IsValid(matches, correctMatches)));
+            foreach (Solution2 solution in ValidSolutions)
+                solutionValidity.Add(new Tuple<Solution2, Boolean>(solution, solution.IsValid(matches, correctMatches)));
 
-            ValidSolutions = new List<Solution>();
-            foreach (Solution solution in solutionValidity.Where(s => s.Item2).Select(s => s.Item1))
+            ValidSolutions = new List<Solution2>();
+            foreach (Solution2 solution in solutionValidity.Where(s => s.Item2).Select(s => s.Item1))
                 ValidSolutions.Add(solution);
         }
 
@@ -138,7 +138,7 @@ namespace AreYouTheOne
         {
             Probabilities = new Int32[Initial.Length, Initial.Length];
 
-            foreach (Solution solution in ValidSolutions)
+            foreach (Solution2 solution in ValidSolutions)
                 for (Int32 i = 0; i < Initial.Length; i++)
                     Probabilities[i, solution.Matches[i]]++;
         }
@@ -210,7 +210,7 @@ namespace AreYouTheOne
         private void Permute(Int32[] i, Int32 l, Int32 r)
         {
             if (l == r)
-                ValidSolutions.Add(new Solution(i));
+                ValidSolutions.Add(new Solution2(i));
             else
             {
                 for (Int32 iI = l; iI <= r; iI++)
